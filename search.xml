@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[如何搭建个人博客]]></title>
+    <url>%2F2019%2F09%2F26%2FHowToBuildYourselfBlog%2F</url>
+    <content type="text"><![CDATA[思来想去，第一篇文章就介绍一下这个好了，也算是一次自我总结 博客的定义引用维基的解释： A blog (a truncation of “weblog”) is a discussion or informational website published on the World Wide Web consisting of discrete, often informal diary-style text entries (posts). 国内常见博客：新浪博客，博客园等等，都属于博客，用户只需注册账号即可开始编写文章并发布，其他人则可输入对应的网址访问。但它们都有一个特点：基于平台而来的域名，即：cnblogs.com/xxx/xxx。若想像本站一样www.hxuesong.com则需要自己搭建服务器及购买域名，本篇文章就将介绍一下如何搭建属于自己的博客。 准备 域名 服务器 域名每一台服务器都有唯一的ip，访问ip即可访问服务器内容，但对于用户来说这太难记了，所以需要一个好记的名字来简化它，这就叫“域名”。 购买阿里云域名 点击上面的链接进入，输入我们想要的名字然后搜索，会得到一系列结果 一般来说我们选择.com即可，毕竟是最广为人知的顶级，也可以根据需要选择其他的 确定好后便可以 加入清单 - 立即结算 这里会推荐许多产品，我们都不需要，直接付款购买域名即可，接下来我们去买服务器。 服务器服务器方面其实有两个选择，且均有国内外之分 虚拟主机 vps 关于以上两者的区别请自行查阅，简单说：要想简单就用虚拟主机，要想自由就用vps（本篇文章以vps为例） 购买阿里云服务器 点击上面的链接进入，页面中会展示大量的服务器，对于新建博客来说并不需要太高配置，我们选择第一个入门级配置即可 点击 立即购买，来到详细配置界面 需要注意的是，不同地域的价格也会有所不同，选择默认的即可；操作系统上选择CentOS或Debian比较好，当然也可以用Windows Server 确定无误过后就可以购买了 到此，我们已经购买了必须的产品，但此时访问域名/服务器是无效的，两者之间并未进行关联，接下来我们开始配置服务器。 详细过程服务器配置首先我们需要连接服务器，可以直接在阿里云控制台中进入我们的服务器 点击图中的 远程连接，若未设置密码，会要求设置。 若服务器安装的是Windows Server，接下来的操作就跟在自己电脑上没什么差别了，都是图形化界面，具体配置请参考其他网络文章。 若安装的是Linux类系统（本篇以此为主），我们可以通过ssh连接到服务器 Windows用户可以下载putty或Xshellssh工具进行连接，都是图形界面，操作简单，这里就不介绍了，请自行搜索教程 Mac用户使用自带的终端，输入ssh root@xx.xx.xx.xx，其中xx.xx.xx.xx是服务器的ip地址，然后需要输入服务器密码，注意输入后是不显示任何字符的，并非电脑卡住。 如图显示则代表成功连接： 接着我们需要让它具备web服务器功能，比如安装nginx。当然我们可以使用一键安装命令，像lnmp就具备这种快捷安装方式，将下面这段代码粘贴到服务器终端中并运行：wget http://soft.vpser.net/lnmp/lnmp1.6.tar.gz -cO lnmp1.6.tar.gz &amp;&amp; tar zxf lnmp1.6.tar.gz &amp;&amp; cd lnmp1.6 &amp;&amp; LNMP_Auto=&quot;y&quot; DBSelect=&quot;0&quot; PHPSelect=&quot;5&quot; SelectMalloc=&quot;1&quot; ./install.sh lnmp 整个安装都是全自动的，大约需要10分钟，当看到下图内容时，便安装完毕： 此时在浏览器中直接输入服务器ip地址访问，我们会看到一些内容了，这是来自lnmp的介绍，这些资源被放在/home/wwwroot/default/中，其中index.html就是整个页面，可以尝试修改它的部分内容（使用vi命令可直接在服务器端修改，这里先不说上传下载的事），刷新浏览器页面观察变化。 后续的博客系列文件都会放在这个路径下，服务器先告一段落，接下来我们开始搭建博客平台。 博客平台搭建常见的博客平台有： WordPress hexo typecho hugo jekyll …… 前两个我都用过，本博客就是基于hexo搭建的，我就以此为例介绍一下，其他平台也可以了解一下 hexo点击进入hexo官网 hexo的作者是台湾人，在中文文档方面支持友好，它是基于Node.js而实现的，前端朋友都很熟悉的东西，其文章也是通过md格式编写的，学习成本极低！我们按照文档介绍一步步执行即可： 123hexo init &lt;文件夹名字&gt;cd &lt;文件夹名字&gt;npm install 等待npm install完成后，运行hexo server，打开localhost:4000，即可看到我们的博客啦： 在这里挑选主题 我们可以更改配置不同的主题，有相当多的选择，更酷的是很多主题都具备响应式设计，完美兼容PC/移动端，让我们的博客更加美观！ 具体的配置照着官方文档来即可，这里就不做介绍了 当我们确定无误要发表时，可以用hexo generate命令，hexo会帮我们打包所有文件，最终放在public文件夹中： 到此，我们博客平台也搭建好了，接下来就是将这些文件部署到服务器上。 将博客部署到服务器这一步也很简单，就是将public中的所有资源，放在服务器/home/wwwroot/default/路径下 上传方式也有很多种，本质上都是通过ssh连接到服务器，然后利用scp命令上传/下载，用命令行均可搞定，当然用图形化界面软件也很方便，以下便是几个工具推荐： windows用户可以通过putty Xshell工具进行操作 mac用户可通过Cyberduck工具 关于scp命令的具体用法这里就不介绍了，网上有很多教程，非常简单，注意放在上述路径下即可。 此时再用浏览器访问服务器ip地址，就能看到我们博客啦，别着急，让我们进行最后一步操作：域名与ip关联 域名与ip关联再次进入阿里云控制台，选择域名产品，找到刚刚购买的域名，在操作中选择解析，然后修改： 只需将服务器ip地址填入记录值，点击确定，即可实现关联！ 可能有一定延迟，多等一会后，在浏览器中输入我们的域名，即可访问博客了！（准确来说是要备案后才能访问哈，直接访问ip地址倒不用） 补充有不少朋友会利用GitHub Pages作为博客网站，其本质便是将仓库直接绑定在page上，默认是page的域名，也可以更改，和hexo也能很好的搭配，感兴趣的朋友可以研究一下 另外我一直觉得虚拟主机也是不错的选择，什么东西都搭好了，只需专注写作即可，大家也可以看看这个，更简单一些，不过我还是喜欢vps更加自由独立的形态 结尾作为博客第一篇文章，写得其实比较简洁并非长篇大论。前年用WordPress搭的博客由于数据库出问题，我就关闭了，直到最近朋友要玩博客，终于拾取丢失已久的激情，再次搭建博客起来。用hexo也有段时间了，直接书写md文章的方法让我感觉很优雅，不由感叹一句静态网站始终更舒服。 ~让我们一起坚持写作吧！]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[靓仔]]></title>
+    <url>%2F2019%2F09%2F17%2Fdemo%2F</url>
+    <content type="text"><![CDATA[村长提醒你~： var d = new Date(); hour = d.getHours(); minute = d.getMinutes(); var span1 = document.getElementById("span1"); if(hour === 18){ span1.innerText = '该下班了！'; }else { if(minute === 0){ span1.innerText = `距离下班还有：${(18- hour) * 60}分钟`; }else { span1.innerText = `距离下班还有：${(17 - hour) * 60 + (60 - minute)}分钟`; } }]]></content>
+  </entry>
+</search>
